@@ -143,6 +143,12 @@ const Empty = styled.div`
   color: ${t.textMuted};
 `
 
+const AllClear = styled.span`
+  font-size: 12px;
+  font-weight: 500;
+  color: #4ade80;
+`
+
 type Props = {
   result: AgentResult
 }
@@ -166,6 +172,9 @@ export const AgentCard = ({ result }: Props) => {
           )}
           {warnCount > 0 && (
             <WarnCount>{warnCount} warning{warnCount > 1 ? 's' : ''}</WarnCount>
+          )}
+          {errorCount === 0 && warnCount === 0 && (
+            <AllClear>✓ No issues</AllClear>
           )}
           <Chevron open={open} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
