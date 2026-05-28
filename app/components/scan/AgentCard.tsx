@@ -4,13 +4,14 @@ import { useState } from 'react'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 import type { AgentResult } from './types'
-import { AGENT_LABEL } from './types'
+import { AGENT_LABEL, ISSUE_TYPE_LABEL } from './types'
 import { SeverityBadge } from './SeverityBadge'
+import { t } from '../../theme'
 
 const Card = styled.div`
   border-radius: 12px;
-  border: 1px solid #27272a;
-  background: #111113;
+  border: 1px solid ${t.border};
+  background: ${t.surface};
   overflow: hidden;
 `
 
@@ -28,7 +29,7 @@ const Header = styled.button`
   color: inherit;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.04);
   }
 `
 
@@ -41,12 +42,12 @@ const HeaderLeft = styled.div`
 const AgentName = styled.span`
   font-weight: 600;
   font-size: 15px;
-  color: #fafafa;
+  color: ${t.textPrimary};
 `
 
 const Summary = styled.span`
   font-size: 13px;
-  color: #71717a;
+  color: ${t.textSecondary};
 `
 
 const HeaderRight = styled.div`
@@ -60,28 +61,28 @@ const HeaderRight = styled.div`
 const ErrorCount = styled.span`
   font-size: 12px;
   font-weight: 500;
-  color: #f87171;
+  color: ${t.errorText};
 `
 
 const WarnCount = styled.span`
   font-size: 12px;
   font-weight: 500;
-  color: #fbbf24;
+  color: ${t.warning};
 `
 
 const Chevron = styled.svg<{ open: boolean }>`
   width: 16px;
   height: 16px;
-  color: #52525b;
+  color: ${t.textMuted};
   transition: transform 200ms ease;
   ${(p) => p.open && css`transform: rotate(180deg);`}
 `
 
 const IssueList = styled.div`
-  border-top: 1px solid #27272a;
+  border-top: 1px solid ${t.border};
 
   & > * + * {
-    border-top: 1px solid #27272a;
+    border-top: 1px solid ${t.border};
   }
 `
 
@@ -102,7 +103,7 @@ const IssueHeader = styled.div`
 const PageUrl = styled.span`
   font-size: 11px;
   font-family: monospace;
-  color: #52525b;
+  color: ${t.textMuted};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -111,22 +112,35 @@ const PageUrl = styled.span`
 
 const IssueDescription = styled.p`
   font-size: 13px;
-  color: #d4d4d8;
+  color: ${t.textSecondary};
   margin: 0;
 `
 
 const IssueSuggestion = styled.p`
   font-size: 13px;
-  color: #71717a;
+  color: ${t.textMuted};
   font-style: italic;
   margin: 0;
 `
 
+const IssueTypeTag = styled.span`
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: ${t.textMuted};
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid ${t.border};
+  border-radius: 4px;
+  padding: 1px 6px;
+  flex-shrink: 0;
+`
+
 const Empty = styled.div`
-  border-top: 1px solid #27272a;
+  border-top: 1px solid ${t.border};
   padding: 16px 20px;
   font-size: 13px;
-  color: #52525b;
+  color: ${t.textMuted};
 `
 
 type Props = {
@@ -166,6 +180,7 @@ export const AgentCard = ({ result }: Props) => {
               <IssueRow key={i}>
                 <IssueHeader>
                   <SeverityBadge severity={issue.severity} />
+                  <IssueTypeTag>{ISSUE_TYPE_LABEL[issue.type] ?? issue.type}</IssueTypeTag>
                   <PageUrl>{issue.page_url}</PageUrl>
                 </IssueHeader>
                 <IssueDescription>{issue.description}</IssueDescription>

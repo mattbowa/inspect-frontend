@@ -4,6 +4,7 @@ import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 import type { ScanStatus } from './types'
 import { STATUS_LABEL } from './types'
+import { t } from '../../theme'
 
 const STEPS: ScanStatus[] = ['pending', 'crawling', 'analysing', 'done']
 
@@ -21,16 +22,16 @@ const Step = styled.div<{ state: 'done' | 'active' | 'upcoming' }>`
   font-size: 13px;
 
   ${(p) => {
-    if (p.state === 'done') return css`color: #22c55e;`
-    if (p.state === 'active') return css`color: #fafafa;`
-    return css`color: #52525b;`
+    if (p.state === 'done') return css`color: ${t.success};`
+    if (p.state === 'active') return css`color: ${t.textPrimary};`
+    return css`color: ${t.textMuted};`
   }}
 `
 
 const Connector = styled.div<{ filled: boolean }>`
   height: 1px;
   width: 24px;
-  background: ${(p) => (p.filled ? '#15803d' : '#3f3f46')};
+  background: ${(p) => (p.filled ? t.successDim : t.border)};
 `
 
 const IconCheck = () => (
@@ -55,7 +56,7 @@ const IconSpinner = () => (
 
 const IconDot = () => (
   <svg width="16" height="16" viewBox="0 0 16 16">
-    <circle cx="8" cy="8" r="6" fill="none" stroke="#3f3f46" strokeWidth="1.5" />
+    <circle cx="8" cy="8" r="6" fill="none" stroke={t.border} strokeWidth="1.5" />
   </svg>
 )
 

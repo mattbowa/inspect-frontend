@@ -3,6 +3,7 @@
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 import type { IssueSeverity } from './types'
+import { t } from '../../theme'
 
 export enum SeverityVariant {
   Error = 'error',
@@ -21,22 +22,22 @@ const StyledBadge = styled.span<{ variant: IssueSeverity }>`
   ${(p) => {
     if (p.variant === 'error') {
       return css`
-        background: #2d0a0a;
-        color: #f87171;
-        border: 1px solid #7f1d1d;
+        background: ${t.errorBg};
+        color: ${t.errorText};
+        border: 1px solid ${t.error};
       `
     }
     if (p.variant === 'warning') {
       return css`
-        background: #2d1b00;
-        color: #fbbf24;
-        border: 1px solid #78350f;
+        background: ${t.warningBg};
+        color: ${t.warningText};
+        border: 1px solid ${t.warningBorder};
       `
     }
     return css`
-      background: #1c1c1e;
-      color: #a1a1aa;
-      border: 1px solid #3f3f46;
+      background: ${t.infoBg};
+      color: ${t.info};
+      border: 1px solid ${t.infoBorder};
     `
   }}
 `

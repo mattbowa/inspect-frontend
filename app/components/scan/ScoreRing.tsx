@@ -1,6 +1,7 @@
 'use client'
 
 import styled from '@emotion/styled'
+import { t } from '../../theme'
 
 const Wrapper = styled.div`
   display: flex;
@@ -11,11 +12,11 @@ const Wrapper = styled.div`
 
 const Label = styled.span`
   font-size: 13px;
-  color: #71717a;
+  color: ${t.textSecondary};
 `
 
 const scoreColor = (score: number) =>
-  score >= 70 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444'
+  score >= 70 ? t.success : score >= 40 ? t.warning : t.errorText
 
 type Props = {
   score: number
@@ -30,7 +31,7 @@ export const ScoreRing = ({ score }: Props) => {
   return (
     <Wrapper>
       <svg width="130" height="130" viewBox="0 0 130 130">
-        <circle cx="65" cy="65" r={radius} fill="none" stroke="#27272a" strokeWidth="10" />
+        <circle cx="65" cy="65" r={radius} fill="none" stroke={t.border} strokeWidth="10" />
         <circle
           cx="65"
           cy="65"

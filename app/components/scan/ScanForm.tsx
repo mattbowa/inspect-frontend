@@ -7,8 +7,9 @@ import type { ScanStatus, Report } from './types'
 import { StatusBar } from './StatusBar'
 import { ScoreRing } from './ScoreRing'
 import { AgentCard } from './AgentCard'
+import { t } from '../../theme'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'
+import { API_BASE } from '../../lib/api'
 
 // ── Form ──────────────────────────────────────────────────────────────────────
 
@@ -34,7 +35,7 @@ const InputPrefix = styled.span`
   top: 50%;
   transform: translateY(-50%);
   font-size: 14px;
-  color: #52525b;
+  color: ${t.textMuted};
   pointer-events: none;
   user-select: none;
 `
@@ -42,20 +43,20 @@ const InputPrefix = styled.span`
 const Input = styled.input<{ disabled?: boolean }>`
   width: 100%;
   border-radius: 12px;
-  border: 1px solid #3f3f46;
-  background: #111113;
-  padding: 14px 16px 14px 80px;
+  border: 1px solid ${t.border};
+  background: ${t.surface};
+  padding: 14px 16px 14px 72px;
   font-size: 15px;
-  color: #fafafa;
+  color: ${t.textPrimary};
   outline: none;
   transition: border-color 150ms ease, box-shadow 150ms ease;
 
   &::placeholder {
-    color: #52525b;
+    color: ${t.textMuted};
   }
 
   &:focus {
-    border-color: #6366f1;
+    border-color: ${t.accent};
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
   }
 
@@ -67,20 +68,23 @@ const Input = styled.input<{ disabled?: boolean }>`
     `}
 `
 
-const SubmitButton = styled.button<{ disabled?: boolean }>`
+const EmailInput = styled.input<{ disabled?: boolean }>`
+  width: 100%;
   border-radius: 12px;
-  background: #4f46e5;
-  color: #fff;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 14px 24px;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 150ms ease;
+  border: 1px solid ${t.accent};
+  background: ${t.surface};
+  padding: 12px 16px;
+  font-size: 14px;
+  color: ${t.textPrimary};
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 
-  &:hover:not(:disabled) {
-    background: #6366f1;
+  &::placeholder {
+    color: ${t.textMuted};
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
   }
 
   ${(p) =>
@@ -91,28 +95,44 @@ const SubmitButton = styled.button<{ disabled?: boolean }>`
     `}
 `
 
-const SliderRow = styled.div`
+const SubscriberPrompt = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  padding: 2px 0;
 `
 
-const SliderLabel = styled.label`
+const SubscriberLabel = styled.span`
   font-size: 13px;
-  color: #71717a;
+  color: ${t.textMuted};
   white-space: nowrap;
 `
 
-const Slider = styled.input`
-  flex: 1;
-  accent-color: #6366f1;
-`
+const SubmitButton = styled.button<{ disabled?: boolean }>`
+  border-radius: 12px;
+  background: linear-gradient(135deg, ${t.accent} 0%, #7c3aed 100%);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+  color: ${t.textPrimary};
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 24px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: box-shadow 150ms ease, opacity 150ms ease;
 
-const SliderValue = styled.span`
-  font-size: 13px;
-  color: #d4d4d8;
-  width: 28px;
-  text-align: right;
+  &:hover:not(:disabled) {
+    box-shadow: 0 4px 28px rgba(99, 102, 241, 0.55);
+    opacity: 0.92;
+  }
+
+  ${(p) =>
+    p.disabled &&
+    css`
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    `}
 `
 
 // ── Error ─────────────────────────────────────────────────────────────────────
@@ -120,11 +140,47 @@ const SliderValue = styled.span`
 const ErrorBox = styled.div`
   margin-top: 24px;
   border-radius: 12px;
-  border: 1px solid #7f1d1d;
-  background: rgba(127, 29, 29, 0.2);
+  border: 1px solid ${t.error};
+  background: rgba(157, 34, 53, 0.15);
   padding: 16px 20px;
   font-size: 13px;
-  color: #fca5a5;
+  color: ${t.errorText};
+`
+
+// ── Upsell ────────────────────────────────────────────────────────────────────
+
+const UpsellBanner = styled.div`
+  margin-top: 24px;
+  border-radius: 12px;
+  border: 1px solid ${t.border};
+  background: rgba(55, 48, 163, 0.15);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`
+
+const UpsellText = styled.p`
+  flex: 1;
+  font-size: 13px;
+  color: ${t.textSecondary};
+  margin: 0;
+`
+
+const UpsellButton = styled.a`
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: ${t.accent};
+  color: ${t.textPrimary};
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background 150ms ease;
+
+  &:hover {
+    background: ${t.accentHover};
+  }
 `
 
 // ── Report ────────────────────────────────────────────────────────────────────
@@ -153,35 +209,35 @@ const ReportMeta = styled.div`
 
 const MetaHint = styled.p`
   font-size: 12px;
-  color: #52525b;
+  color: ${t.textMuted};
   margin: 0 0 4px;
 `
 
 const MetaUrl = styled.p`
   font-family: monospace;
   font-size: 14px;
-  color: #d4d4d8;
+  color: ${t.textSecondary};
   word-break: break-all;
   margin: 0 0 4px;
 `
 
 const MetaScanId = styled.p`
   font-size: 11px;
-  color: #52525b;
+  color: ${t.textMuted};
   margin: 0;
 `
 
 const ActionsCard = styled.div`
   border-radius: 12px;
-  border: 1px solid #27272a;
-  background: #111113;
+  border: 1px solid ${t.border};
+  background: ${t.surface};
   padding: 20px;
 `
 
 const ActionsTitle = styled.h2`
   font-weight: 600;
   font-size: 15px;
-  color: #fafafa;
+  color: ${t.textPrimary};
   margin: 0 0 16px;
 `
 
@@ -198,7 +254,7 @@ const ActionItem = styled.li`
   display: flex;
   gap: 12px;
   font-size: 13px;
-  color: #d4d4d8;
+  color: ${t.textSecondary};
 `
 
 const ActionNumber = styled.span`
@@ -206,8 +262,8 @@ const ActionNumber = styled.span`
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #1e1b4b;
-  color: #a5b4fc;
+  background: ${t.border};
+  color: ${t.textPrimary};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -219,7 +275,7 @@ const ActionNumber = styled.span`
 const FindingsTitle = styled.h2`
   font-weight: 600;
   font-size: 15px;
-  color: #fafafa;
+  color: ${t.textPrimary};
   margin: 0;
 `
 
@@ -233,19 +289,59 @@ const FindingsList = styled.div`
 
 export const ScanForm = () => {
   const [url, setUrl] = useState('')
-  const [maxPages, setMaxPages] = useState(20)
+  const [email, setEmail] = useState('')
+  const [notify, setNotify] = useState(false)
+  const [showEmailPrompt, setShowEmailPrompt] = useState(false)
+  const [maxPages, setMaxPages] = useState(1)
   const [status, setStatus] = useState<ScanStatus>('idle')
   const [scanId, setScanId] = useState<string | null>(null)
   const [report, setReport] = useState<Report | null>(null)
   const [error, setError] = useState<string | null>(null)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const reportRef = useRef<HTMLDivElement | null>(null)
+  const domainCheckRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     return () => {
       if (pollRef.current) clearInterval(pollRef.current)
+      if (domainCheckRef.current) clearTimeout(domainCheckRef.current)
     }
   }, [])
+
+  useEffect(() => {
+    fetch(`${API_BASE}/config`)
+      .then((r) => r.json())
+      .then((data) => setMaxPages(data.free_page_limit))
+      .catch(() => {})
+  }, [])
+
+  function handleUrlChange(value: string) {
+    setUrl(value)
+    setShowEmailPrompt(false)
+    setEmail('')
+
+    if (domainCheckRef.current) clearTimeout(domainCheckRef.current)
+
+    const trimmed = value.trim()
+    if (!trimmed || trimmed.length < 4) return
+
+    domainCheckRef.current = setTimeout(async () => {
+      let normalized = trimmed
+      if (!/^https?:\/\//i.test(normalized)) normalized = 'https://' + normalized
+      try {
+        const res = await fetch(`${API_BASE}/billing/check-domain`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ website: normalized }),
+        })
+        if (!res.ok) return
+        const data = await res.json()
+        if (data.website_subscribed) setShowEmailPrompt(true)
+      } catch {
+        // silently ignore — don't block scanning if check fails
+      }
+    }, 600)
+  }
 
   async function startScan(e: React.FormEvent) {
     e.preventDefault()
@@ -258,10 +354,20 @@ export const ScanForm = () => {
     if (!/^https?:\/\//i.test(normalized)) normalized = 'https://' + normalized
 
     try {
+      const trimmedEmail = email.trim()
+      const body: Record<string, unknown> = {
+        url: normalized,
+        max_pages: trimmedEmail ? 200 : maxPages,
+      }
+      if (trimmedEmail) {
+        body.email = trimmedEmail
+        body.notify = notify
+      }
+
       const res = await fetch(`${API_BASE}/scans`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: normalized, max_pages: maxPages }),
+        body: JSON.stringify(body),
       })
       if (!res.ok) throw new Error(`API error ${res.status}`)
       const data = await res.json()
@@ -320,7 +426,7 @@ export const ScanForm = () => {
             <Input
               type="text"
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              onChange={(e) => handleUrlChange(e.target.value)}
               placeholder="yoursite.com"
               required
               disabled={isScanning}
@@ -331,24 +437,47 @@ export const ScanForm = () => {
           </SubmitButton>
         </InputRow>
 
-        <SliderRow>
-          <SliderLabel htmlFor="maxPages">Pages to crawl:</SliderLabel>
-          <Slider
-            id="maxPages"
-            type="range"
-            min={1}
-            max={100}
-            value={maxPages}
-            onChange={(e) => setMaxPages(Number(e.target.value))}
-            disabled={isScanning}
-          />
-          <SliderValue>{maxPages}</SliderValue>
-        </SliderRow>
+        {showEmailPrompt && (
+          <>
+            <SubscriberPrompt>
+              <SubscriberLabel>Subscriber email</SubscriberLabel>
+              <EmailInput
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@company.com — unlock unlimited pages"
+                disabled={isScanning}
+                autoFocus
+              />
+            </SubscriberPrompt>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}>
+              <input
+                type="checkbox"
+                checked={notify}
+                onChange={(e) => setNotify(e.target.checked)}
+                disabled={isScanning}
+                style={{ accentColor: t.accentHover, width: 14, height: 14 }}
+              />
+              <span style={{ fontSize: 13, color: t.textSubtle }}>Email me a copy of this report</span>
+            </label>
+          </>
+        )}
       </Form>
 
       <StatusBar status={status} />
 
       {error && <ErrorBox>{error}</ErrorBox>}
+
+      {report && report.pages_crawled > 0 && report.pages_crawled < report.pages_discovered && (
+        <UpsellBanner>
+          <UpsellText>
+            Free scan: audited <strong>{report.pages_crawled}</strong> of{' '}
+            <strong>~{report.pages_discovered}</strong> pages found on your site. Upgrade to scan
+            your entire site.
+          </UpsellText>
+          <UpsellButton href="/pricing">Upgrade</UpsellButton>
+        </UpsellBanner>
+      )}
 
       {report && (
         <ReportWrapper ref={reportRef}>
@@ -357,7 +486,14 @@ export const ScanForm = () => {
             <ReportMeta>
               <MetaHint>Audit for</MetaHint>
               <MetaUrl>{report.url}</MetaUrl>
-              <MetaScanId>Scan ID: {report.scan_id}</MetaScanId>
+              <MetaScanId>
+                {report.pages_discovered > 0 && (
+                  <>
+                    {report.pages_crawled > 0 ? report.pages_crawled : maxPages} of ~{report.pages_discovered} pages analysed &middot;{' '}
+                  </>
+                )}
+                Scan ID: {report.scan_id}
+              </MetaScanId>
             </ReportMeta>
           </ReportHeader>
 
@@ -383,6 +519,46 @@ export const ScanForm = () => {
                   <AgentCard key={agent.agent} result={agent} />
                 ))}
               </FindingsList>
+            </div>
+          )}
+
+          {report.agents?.some((a) =>
+            a.issues.some((i) => i.severity === 'error' || i.severity === 'warning')
+          ) && (
+            <div style={{
+              borderRadius: 14,
+              border: `1px solid rgba(99, 102, 241, 0.4)`,
+              background: 'rgba(79, 70, 229, 0.07)',
+              padding: '20px 24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 16,
+              flexWrap: 'wrap',
+            }}>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 600, color: t.textPrimary, margin: '0 0 4px' }}>
+                  Want us to fix these issues for you?
+                </p>
+                <p style={{ fontSize: 13, color: t.textSecondary, margin: 0 }}>
+                  Our team can resolve technical SEO issues starting from $99.
+                </p>
+              </div>
+              <a
+                href="/services"
+                style={{
+                  flexShrink: 0,
+                  borderRadius: 9,
+                  background: t.accent,
+                  color: t.textPrimary,
+                  fontWeight: 600,
+                  fontSize: 13,
+                  padding: '9px 18px',
+                  textDecoration: 'none',
+                }}
+              >
+                View services
+              </a>
             </div>
           )}
         </ReportWrapper>
