@@ -338,7 +338,7 @@ export const ScanForm = () => {
         const data = await res.json()
         if (data.website_subscribed) setShowEmailPrompt(true)
       } catch {
-        // silently ignore — don't block scanning if check fails
+        // silently ignore — don't block scanning if check fail
       }
     }, 600)
   }
