@@ -62,6 +62,7 @@ export default function RootLayout({
         <NavBar />
         {children}
         <Footer />
+        <script src="https://zebboy.com/widget.js" data-slug="mattias" defer></script>
       </body>
     </html>
   );
