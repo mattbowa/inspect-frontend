@@ -39,9 +39,6 @@ export const metadata: Metadata = {
     title: "InspectFlux — Free SEO Audit Tool",
     description: "Run a free SEO audit on any website. 18+ automated checks, AI-powered action plan.",
   },
-  alternates: {
-    canonical: BASE_URL,
-  },
   robots: {
     index: true,
     follow: true,
